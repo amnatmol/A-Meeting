@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ตารางการประชุม สำนักงานแรงงานจังหวัด</title>
+  <title>ระบบจัดตารางการประชุม สรจ.อำนาจเจริญ</title>
   
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="#5B21B6">
-  <meta name="apple-mobile-web-app-title" content="Amnat MOL APP">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-title" content="จัดตารางการประชุม">
+  <link rel="apple-touch-icon" href="./icon-192.png">
 
   <style>
     body, html {
@@ -23,17 +23,24 @@
 </head>
 <body>
 
-  <iframe src="https://script.google.com/macros/s/AKfycbzqbw9IFcoUIYy5gb9fxOiqZhtmMvhin8Uo6gtKiM5GGQXHw1RtiDN6-0vr19MeeGjj/exec"></iframe>
+  <iframe src="https://script.google.com/macros/s/AKfycbwe6O2rKO5XdMumXP0_mZd1ymvzX4fXTYlYgx27VL5xdMOX9pMouipu4R1Y0rwIehRY/exec"></iframe>
 
-  <script>
-    // ลงทะเบียน Service Worker เพื่อให้ผ่านเกณฑ์ PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('Service Worker ลงทะเบียนสำเร็จ!', reg))
-          .catch(err => console.log('Service Worker เกิดข้อผิดพลาด:', err));
-      });
-    }
-  </script>
+ <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker สำเร็จ!'))
+        .catch(err => console.log('Service Worker ล้มเหลว:', err));
+    });
+  }
+
+  // ดักจับอีเวนต์เพื่อเปิดให้ติดตั้ง PWA
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('พร้อมสำหรับการติดตั้ง PWA');
+  });
+</script>
 </body>
 </html>
