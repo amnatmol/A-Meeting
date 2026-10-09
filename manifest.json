@@ -1,7 +1,7 @@
 {
   "name": "จัดตารางการประชุม",
   "short_name": "สำนักงานแรงงานจังหวัดอำนาจเจริญ",
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#4a154b",
   "theme_color": "#6f42c1",
