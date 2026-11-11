@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-cache-v3';
+const CACHE_NAME = 'pwa-cache-v2'; // <--- เปลี่ยนชื่อเวอร์ชัน Cache ตรงนี้
 const urlsToCache = [
   './',
   './index.html',
