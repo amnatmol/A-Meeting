@@ -3,97 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ดัชนีความน่าเชื่อถือด้านแรงงาน จังหวัดอำนาจเจริญ</title>
+  <title>ระบบเรียกน้องเข้าพบ</title>
+  
   <link rel="manifest" href="./manifest.json">
+  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="#5B21B6">
+  <meta name="apple-mobile-web-app-title" content="ระบบเรียกน้องเข้าพบ">
   <link rel="apple-touch-icon" href="./icon-192.png">
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
-    :root { --primary: #9b59b6; --primary-light: #d7bde2; --bg: #f9f3fc; --text: #4a235a; --white: #ffffff; }
-    body { font-family: 'Prompt', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-    .container { width: 100%; max-width: 800px; padding: 20px; box-sizing: border-box; }
-    .section { display: none; background: var(--white); border-radius: 20px; padding: 30px; box-shadow: 0 10px 20px rgba(155, 89, 182, 0.1); margin-top: 20px; text-align: center; }
-    .section.active { display: block; animation: fadeIn 0.4s; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    h2 { color: var(--primary); }
-    input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid var(--primary-light); border-radius: 10px; font-family: 'Prompt'; box-sizing: border-box; outline: none; }
-    button { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-family: 'Prompt'; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px; width: 100%; font-size: 16px; }
+    body, html {
+      margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #5B21B6;
+    }
+    iframe {
+      border: none; width: 100%; height: 100%;
+    }
   </style>
 </head>
-<body onload="checkSession()">
+<body>
 
-  <div class="container">
-    <!-- หน้า Login -->
-    <div id="login-section" class="section active">
-      <h2>เข้าสู่ระบบ</h2>
-      <input type="text" id="username" placeholder="ชื่อผู้ใช้งาน (Username)">
-      <input type="password" id="password" placeholder="รหัสผ่าน (Password)">
-      <button onclick="login()" id="login-btn">เข้าสู่ระบบ</button>
-    </div>
-  </div>
+  <iframe src="https://script.google.com/macros/s/AKfycbz4mesk81J8Ra0Btxdygj9qI0bm_6FmITJy-ZL0zDlklYf7tU9IPr1Iawn0kcRcOfq24w/exec"></iframe>
 
-  <script>
-    // --- ระบบ PWA Service Worker ---
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
-    }
+ <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker สำเร็จ!'))
+        .catch(err => console.log('Service Worker ล้มเหลว:', err));
+    });
+  }
 
-    // --- ตั้งค่า API URL (ใช้ URL ล่าสุดของ Apps Script) ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbyublULPGl3k1M6mahZaijsEuGAs8MH3bzmMN4iyhQclUISbDY47bY9AW3QJlId50oqAw/exec";
-
-    // --- ฟังก์ชันสื่อสารกับ API ---
-    function callAPI(action, parameters, successCallback) {
-      let formData = new URLSearchParams();
-      formData.append('action', action);
-      if(parameters) {
-        for (let key in parameters) { formData.append(key, parameters[key]); }
-      }
-
-      fetch(API_URL, { method: 'POST', body: formData })
-        .then(response => response.json())
-        .then(data => { if(successCallback) successCallback(data); })
-        .catch(error => {
-          console.error('Error:', error);
-          Swal.fire('Error', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
-        });
-    }
-
-    // --- ระบบ Login บน GitHub ---
-    function checkSession() {
-      const savedUser = localStorage.getItem('appSession');
-      if (savedUser) {
-        const userObj = JSON.parse(savedUser);
-        proceedLogin(userObj.username, userObj.name, userObj.role);
-      }
-    }
-
-    function login() {
-      const u = document.getElementById('username').value;
-      const p = document.getElementById('password').value;
-      if (!u || !p) return Swal.fire({ icon: 'warning', title: 'แจ้งเตือน', text: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
-      
-      document.getElementById('login-btn').innerText = "กำลังตรวจสอบ...";
-      
-      // ส่งคำสั่ง checkLogin ไปยัง API
-      callAPI('checkLogin', { username: u, password: p }, (res) => {
-        document.getElementById('login-btn').innerText = "เข้าสู่ระบบ";
-        if(res.success) {
-          localStorage.setItem('appSession', JSON.stringify({ username: res.username, name: res.name, role: res.role }));
-          Swal.fire({ icon: 'success', title: 'สำเร็จ', text: `ยินดีต้อนรับ ${res.name}`, timer: 1500, showConfirmButton: false });
-          proceedLogin(res.username, res.name, res.role);
-        } else {
-          Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: res.message });
-        }
-      });
-    }
-
-    function proceedLogin(username, name, role) {
-      Swal.fire('สถานะ', 'ระบบ Login ผ่าน API ทำงานสำเร็จ!', 'success');
-      // โค้ดแสดงหน้าต่างแผงควบคุม (Manager/Staff) จะถูกนำมาเติมตรงนี้ในขั้นตอนถัดไป
-    }
-  </script>
+  // ดักจับอีเวนต์เพื่อเปิดให้ติดตั้ง PWA
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('พร้อมสำหรับการติดตั้ง PWA');
+  });
+</script>
 </body>
 </html>
